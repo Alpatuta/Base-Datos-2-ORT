@@ -1,0 +1,2 @@
+CREATE DATABASE BD2_Practico;
+
