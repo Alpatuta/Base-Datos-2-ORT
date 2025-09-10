@@ -193,3 +193,115 @@ select e.FirstName, e.LastName, count(distinct o.ShipCountry) as diferentesPaise
 	inner join Shippers s on o.ShipVia = s.ShipperID
 		group by e.FirstName, e.LastName; 
 
+--39)
+
+select distinct e.FirstName, e.LastName, o.OrderDate, count(distinct o.OrderID) as cantOrders 
+	from Employees e inner join Orders o on e.EmployeeID = o.EmployeeID
+		group by e.FirstName, e.LastName, o.OrderDate;
+
+--40)
+
+select o.OrderDate, sum(o.Freight) as sumaFletes, count(distinct o.ShipCity) as ciudadesDif 
+	from Orders o group by o.OrderDate;
+
+--41)
+
+select c.CustomerID, c.CompanyName, count(o.OrderID) as cantOrdenes 
+	from Customers c inner join Orders o on c.CustomerID = o.CustomerID where YEAR(o.OrderDate) like '1996'
+		group by c.CustomerID , c.CompanyName having count(o.OrderID) > 5;
+
+--42)
+
+select e.FirstName, e.LastName, sum(o.Freight) as totalFletes 
+	from Employees e inner join Orders o on e.EmployeeID = o.EmployeeID
+		group by e.FirstName, e.LastName having sum(o.Freight) > 1000 
+			order by sum(o.Freight) desc;
+
+--43)
+
+select o.ShipCountry, count(o.OrderID) as QuantityOrders, avg(o.Freight) as FreightAvg 
+	from Orders o group by o.ShipCountry having count(o.OrderID) > 100 or avg(o.Freight) < 50;
+
+--44)
+
+select p.ProductID, p.ProductName, p.UnitPrice 
+	from Products p inner join Suppliers s on p.SupplierID = s.SupplierID
+		where (p.UnitPrice > 500 and (s.Country like 'USA' or s.Country like 'UK'));
+		
+--45)
+
+select c.CustomerID, c.CompanyName, o.OrderDate, sum(od.ProductID) as totalProduct 
+	from Customers c inner join Orders o on c.CustomerID = o.CustomerID 
+	inner join OrderDetails od on o.OrderID = od.OrderID
+		group by c.CustomerID, c.CompanyName, o.OrderDate having sum(od.ProductID) > 100 and sum(od.ProductID) < 200;
+
+--46)
+
+select top 10 p.ProductName, sum(od.Quantity) as TotalQuantity
+	from Orders o inner join OrderDetails od on o.OrderID = od.OrderID
+	inner join Products p on od.ProductID = p.ProductID
+		where YEAR(o.OrderDate) = 1998 group by p.ProductID, p.ProductName
+			order by TotalQuantity desc;
+
+--47)
+
+select top 1 s.ShipperID, s.CompanyName, s.Phone, sum(o.Freight) as TotalFreight
+	from Shippers s inner join Orders o on s.ShipperID = o.OrderID
+		where year(o.OrderDate) between '1996' and '1997' 
+			group by s.ShipperID, s.CompanyName, s.Phone order by TotalFreight asc;
+
+--48)
+
+select top 5 c.CustomerID, c.CompanyName, count(o.OrderID) as TotalOrders
+	from Customers c inner join Orders o on  c.CustomerID = o.CustomerID
+		group by c.CustomerID, c.CompanyName having count(o.OrderID) > 10 and count(o.OrderID) < 20
+			order by TotalOrders desc;
+
+--49)
+
+select top 10 s.CompanyName, max(o.OrderDate) as TopDate 
+	from Suppliers s inner join Products p on s.SupplierID = p.SupplierID
+	inner join OrderDetails od on p.ProductID = od.ProductID
+	inner join Orders o on od.OrderID = o.OrderID
+		where o.OrderDate between '1998/05/01' and '1998/05/05'
+			group by s.CompanyName;
+
+--50)
+
+select top 3 e.FirstName, e.LastName, count(o.OrderID) as TotalOrders ,sum(o.Freight) as TotalFreights 
+	from Employees e inner join Orders o on e.EmployeeID = o.OrderID
+		group by e.FirstName, e.LastName having sum(o.Freight) > 4000
+			order by TotalFreights desc;
+
+--51)
+
+select top 5 p.ProductID, p.ProductName, round(sum(od.Discount), 2) as TotalDiscount
+	from Products p inner join OrderDetails od on p.ProductID = od.ProductID
+		group by p.ProductID, p.ProductName having sum(od.Discount) < 1 ;
+
+--52)
+
+select count(o.OrderID) as TotalOrders, sum(o.Freight) as TotalFreightPrice, o.ShipCountry, o.ShipCity, avg(o.Freight) as FreightAvg
+	from Orders o 
+		group by o.ShipCountry, o.ShipCity having avg(o.Freight) > 50 
+			order by o.ShipCountry , o.ShipCity; 
+
+--53)
+
+select c.CategoryID, c.CategoryName, count(p.ProductID) as ProductsFromCategory
+	from Categories c inner join Products p on c.CategoryID = p.CategoryID
+		group by c.CategoryID, c.CategoryName having count(p.ProductID) > 10;
+
+--54)
+
+select s.Country, count(s.SupplierID) as SupplierPerCountry 
+	from Suppliers s group by s.Country having count(s.SupplierID) > 2
+		order by SupplierPerCountry desc;
+
+--55)
+
+select p.ProductID, p.ProductName, count(od.OrderID) as OrdersPerProduct
+	from Products p inner join OrderDetails od on p.ProductID = od.ProductID
+		where p.ProductName like '%queso%' 
+			group by p.ProductID, p.ProductName 
+				having count(od.OrderID) > 20;
