@@ -9331,3 +9331,31 @@ ALTER TABLE EmployeeTerritories
 		[TerritoryID]
 	)
 GO
+
+/* The follwing adds tables to the Northwind database (Fernando Thul) */
+CREATE TABLE Countries(CountryID int identity not null,
+ CountryName nvarchar(30) not null,
+ CONSTRAINT PK_Country PRIMARY KEY(CountryID))
+Go
+CREATE TABLE Cities(CityID int identity not null,
+ CityName nvarchar(30) not null,
+ CountryID int not null,
+ OrdersQty int,
+ CONSTRAINT PK_City PRIMARY KEY(CityID),
+ CONSTRAINT FK_CityCountry FOREIGN KEY(CountryID)
+ REFERENCES Countries(CountryID))
+GO
+CREATE TABLE PriceList(PriceListID int identity not null,
+ PriceListDate date,
+ PriceListExpiration date,
+ CONSTRAINT PK_PriceList PRIMARY KEY(PriceListID))
+Go
+CREATE TABLE PriceListDetail(PriceListID int not null,
+ ProductID int not null,
+ UnitPrice money,
+ CONSTRAINT PK_PLDetail PRIMARY KEY(PriceListID,ProductID),
+ CONSTRAINT FK_PLDetailPriceList FOREIGN KEY(PriceListID)
+ REFERENCES PriceList(PriceListID),
+ CONSTRAINT FK_PLDetailProduct FOREIGN KEY(ProductID)
+ REFERENCES Products(ProductID))
+Go
