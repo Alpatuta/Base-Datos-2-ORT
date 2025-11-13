@@ -1,0 +1,69 @@
+use northwind_mongo
+
+//1
+db.createCollection("ProductReviews")
+
+//2
+db.ProductReviews.insertOne({
+        "product_id": 1,
+        "comment": "Buen producto",
+        "review_date": "2025-04-04"
+})
+
+db.ProductReviews.insertOne({
+        "product_id": 2,
+        "comment": "Gran producto",
+        "review_date": "2025-2-14"
+})
+
+db.ProductReviews.insertOne({
+        "product_id": 3,
+        "comment": "Es lo mejor que me paso en la vida",
+        "review_date": "2003-3-30"
+})
+
+db.ProductReviews.insertOne({
+        "product_id": 4,
+        "comment": "Aguanten los celtics",
+        "review_date": "2017-6-20"
+})
+
+db.ProductReviews.insertOne({
+        "product_id": 5,
+        "comment": "Lando Norrris WDC",
+        "review_date": "2025-12-12"
+})
+
+//3
+db.ProductReviews.find({"product_id": 1})
+
+//4
+db.ProductReviews.find({})
+
+//5
+db.ProductReviews.find({"comment": /Buen/})
+
+//6
+db.ProductReviews.find({"review_date": "2024-02-14"})
+
+//7
+db.ProductReviews.aggregate([
+    {
+        $group: { 
+            _id: "product_id",
+            total_comments: {$sum: 1}
+        }
+    }
+])
+
+//8
+db.ProductReviews.aggregate([
+    {
+        $group: { 
+            _id: "product_id",
+            avg_comment_length: {$avg: {$strLenCP: "comment"}}
+        }
+    }
+])
+
+//9
